@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Javier Alonso Sánchez · Cybersecurity Engineer &amp; SOC L3 Analyst</title>
+  <meta name="description" content="Portfolio de Javier Alonso Sánchez: ingeniero de ciberseguridad y analista SOC L3. Detection Engineering, Threat Hunting, DFIR e ingeniería inversa.">
+  <meta name="author" content="Javier Alonso Sánchez">
+  <meta name="theme-color" content="#070b12">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Javier Alonso Sánchez · Cybersecurity Engineer &amp; SOC L3 Analyst">
+  <meta property="og:description" content="Detection Engineering, Threat Hunting &amp; Incident Response. SIEM/SOAR, EDR/XDR, DFIR y Reversing.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23070b12'/%3E%3Cpath d='M8 11l6 5-6 5' fill='none' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M17 22h8' stroke='%2322d3ee' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="#inicio" aria-label="Inicio · Javier Alonso Sánchez">
+        <span class="brand__prompt" aria-hidden="true">&gt;_</span>
+        <span class="brand__name">jas<span class="brand__dim">@soc</span></span>
+      </a>
+
+      <nav class="nav" aria-label="Principal" data-component="scrollspy">
+        <a href="#experiencia">experiencia</a>
+        <a href="#skills">skills</a>
+        <a href="#formacion">formación</a>
+        <a href="#proyectos">proyectos</a>
+        <a href="#contacto">contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido" data-component="reveal">
+    <!-- 1 · HERO -->
+    <section id="inicio" class="hero container" aria-label="Presentación" data-component="hero"></section>
+
+    <!-- 2 · TIMELINE -->
+    <section id="experiencia" class="section container reveal" aria-labelledby="experiencia-title">
+      <header class="section__head">
+        <p class="eyebrow">// 01 · experience.log</p>
+        <h2 id="experiencia-title">Experiencia profesional</h2>
+        <p class="section__lead">Historial cronológico. Despliega cada puesto para ver responsabilidades y stack empleado.</p>
+      </header>
+      <div data-component="timeline"></div>
+    </section>
+
+    <!-- 3 · SKILLS -->
+    <section id="skills" class="section container reveal" aria-labelledby="skills-title">
+      <header class="section__head">
+        <p class="eyebrow">// 02 · defense_matrix.sh</p>
+        <h2 id="skills-title">Defense &amp; Tech Matrix</h2>
+        <p class="section__lead">Filtra por dominio. Pulsa una herramienta para resaltar en qué puestos la he utilizado.</p>
+      </header>
+      <div data-component="skills"></div>
+    </section>
+
+    <!-- 4 · CERTIFICACIONES Y FORMACIÓN -->
+    <section id="formacion" class="section container reveal" aria-labelledby="formacion-title">
+      <header class="section__head">
+        <p class="eyebrow">// 03 · credentials.json</p>
+        <h2 id="formacion-title">Certificaciones &amp; Formación</h2>
+      </header>
+      <div data-component="credentials"></div>
+    </section>
+
+    <!-- 5 · PROYECTOS -->
+    <section id="proyectos" class="section container reveal" aria-labelledby="proyectos-title">
+      <header class="section__head">
+        <p class="eyebrow">// 04 · projects/</p>
+        <h2 id="proyectos-title">Proyectos &amp; Homelab</h2>
+        <p class="section__lead">Laboratorios y sistemas propios donde pruebo detección, automatización y estrategias algorítmicas.</p>
+      </header>
+      <div data-component="projects"></div>
+    </section>
+  </main>
+
+  <!-- 6 · FOOTER -->
+  <footer id="contacto" class="site-footer" data-component="footer"></footer>
+
+  <noscript>
+    <p class="noscript">Este portfolio necesita JavaScript para mostrar su contenido. Contacto: javieralonsosanchez1996@gmail.com</p>
+  </noscript>
+
+  <!-- Scripts clásicos (sin bundler ni módulos ES) para que funcione también abriendo index.html con doble clic -->
+  <script src="js/core.js" defer></script>
+  <script src="js/data/portfolio-data.js" defer></script>
+  <script src="js/features/scrollspy.js" defer></script>
+  <script src="js/features/reveal.js" defer></script>
+  <script src="js/components/hero.js" defer></script>
+  <script src="js/components/timeline.js" defer></script>
+  <script src="js/components/skills.js" defer></script>
+  <script src="js/components/credentials.js" defer></script>
+  <script src="js/components/projects.js" defer></script>
+  <script src="js/components/footer.js" defer></script>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
