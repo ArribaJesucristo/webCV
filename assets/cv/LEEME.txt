@@ -1,0 +1,6 @@
+Coloca aquí tu CV en PDF con este nombre exacto:
+
+    Javier_Alonso_Sanchez_CV.pdf
+
+Los botones "Descargar CV" apuntan a assets/cv/Javier_Alonso_Sanchez_CV.pdf
+(ruta configurable en js/data/portfolio-data.js → meta.cvUrl).

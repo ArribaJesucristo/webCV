@@ -1,0 +1,45 @@
+/* ==========================================================================
+   Design tokens · Blue Team sobre negro
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Superficies (negro azulado) */
+  --bg: #070b12;
+  --bg-elev: #0b111b;
+  --surface: #0f1724;
+  --surface-2: #151f31;
+  --border: #1d2a40;
+  --border-strong: #2b3f5f;
+
+  /* Texto (contraste AA sobre --bg) */
+  --text: #e6edf7;
+  --text-muted: #9fb0c8;
+  --text-dim: #8394ad;
+
+  /* Acentos: principal + secundario */
+  --accent: #3b82f6;
+  --accent-2: #22d3ee;
+  --accent-ink: #070b12;  /* texto sobre botones de acento */
+}
+
+:root {
+  --glow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+          0 10px 34px -10px color-mix(in srgb, var(--accent) 55%, transparent);
+  --grid-line: rgb(255 255 255 / 0.035);
+
+  /* Tipografía */
+  --font-mono: ui-monospace, "JetBrains Mono", "Cascadia Code", "Fira Code", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+
+  /* Forma y layout */
+  --radius: 12px;
+  --radius-sm: 7px;
+  --maxw: 1120px;
+  --header-h: 64px;
+
+  /* Movimiento */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --t-fast: 150ms;
+  --t-med: 300ms;
+}
