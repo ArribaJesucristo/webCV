@@ -21,6 +21,11 @@
   --accent: #3b82f6;
   --accent-2: #22d3ee;
   --accent-ink: #070b12;  /* texto sobre botones de acento */
+
+  /* Estados semánticos SOC / consola */
+  --ok: #10b981;
+  --warn: #f59e0b;
+  --danger: #f43f5e;
 }
 
 :root {

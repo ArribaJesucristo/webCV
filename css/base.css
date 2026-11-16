@@ -67,10 +67,17 @@ h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -0.01em; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-    transition-delay: 0s !important;
+  .skip-link,
+  .btn,
+  button.chip,
+  .stat,
+  .filter,
+  .cert,
+  .cert::after,
+  .edu,
+  .pipe-node,
+  .contact-row,
+  .tl-chevron {
+    transition-property: color, background-color, border-color, box-shadow, opacity;
   }
 }

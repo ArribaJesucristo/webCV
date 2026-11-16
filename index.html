@@ -31,7 +31,9 @@
 
       <nav class="nav" aria-label="Principal" data-component="scrollspy">
         <a href="#experiencia">experiencia</a>
+        <a href="#simulador">simulador</a>
         <a href="#skills">skills</a>
+        <a href="#arsenal">arsenal</a>
         <a href="#formacion">formación</a>
         <a href="#proyectos">proyectos</a>
         <a href="#contacto">contacto</a>
@@ -53,31 +55,51 @@
       <div data-component="timeline"></div>
     </section>
 
-    <!-- 3 · SKILLS -->
+    <!-- 3 · SIMULADOR SOC L3 -->
+    <section id="simulador" class="section container reveal" aria-labelledby="simulador-title">
+      <header class="section__head">
+        <p class="eyebrow">// 02 · soc_simulator.sh</p>
+        <h2 id="simulador-title">Interactive Cyber Range &amp; Consola DFIR</h2>
+        <p class="section__lead">Investiga y contiene un incidente APT simulado en 5 fases: triage en SIEM, telemetría EDR, reversing del artefacto, threat hunting y playbook SOAR.</p>
+      </header>
+      <div data-component="terminal-game"></div>
+    </section>
+
+    <!-- 4 · SKILLS -->
     <section id="skills" class="section container reveal" aria-labelledby="skills-title">
       <header class="section__head">
-        <p class="eyebrow">// 02 · defense_matrix.sh</p>
+        <p class="eyebrow">// 03 · defense_matrix.sh</p>
         <h2 id="skills-title">Defense &amp; Tech Matrix</h2>
         <p class="section__lead">Filtra por dominio. Pulsa una herramienta para resaltar en qué puestos la he utilizado.</p>
       </header>
       <div data-component="skills"></div>
     </section>
 
-    <!-- 4 · CERTIFICACIONES Y FORMACIÓN -->
+    <!-- 5 · ARSENAL & DETECTION ENGINEERING -->
+    <section id="arsenal" class="section container reveal" aria-labelledby="arsenal-title">
+      <header class="section__head">
+        <p class="eyebrow">// 04 · detection_engineering.yml</p>
+        <h2 id="arsenal-title">Detection Engineering &amp; MITRE ATT&amp;CK</h2>
+        <p class="section__lead">Cobertura táctica y artefactos reales de detección, caza de amenazas y respuesta automatizada.</p>
+      </header>
+      <div data-component="arsenal"></div>
+    </section>
+
+    <!-- 6 · CERTIFICACIONES Y FORMACIÓN -->
     <section id="formacion" class="section container reveal" aria-labelledby="formacion-title">
       <header class="section__head">
-        <p class="eyebrow">// 03 · credentials.json</p>
+        <p class="eyebrow">// 05 · credentials.json</p>
         <h2 id="formacion-title">Certificaciones &amp; Formación</h2>
       </header>
       <div data-component="credentials"></div>
     </section>
 
-    <!-- 5 · PROYECTOS -->
+    <!-- 7 · PROYECTOS -->
     <section id="proyectos" class="section container reveal" aria-labelledby="proyectos-title">
       <header class="section__head">
-        <p class="eyebrow">// 04 · projects/</p>
+        <p class="eyebrow">// 06 · projects/</p>
         <h2 id="proyectos-title">Proyectos &amp; Homelab</h2>
-        <p class="section__lead">Laboratorios y sistemas propios donde pruebo detección, automatización y estrategias algorítmicas.</p>
+        <p class="section__lead">Laboratorios y sistemas propios donde pruebo detección, automatización, EASM y estrategias algorítmicas.</p>
       </header>
       <div data-component="projects"></div>
     </section>
@@ -97,7 +119,9 @@
   <script src="js/features/reveal.js" defer></script>
   <script src="js/components/hero.js" defer></script>
   <script src="js/components/timeline.js" defer></script>
+  <script src="js/components/terminal-game.js" defer></script>
   <script src="js/components/skills.js" defer></script>
+  <script src="js/components/arsenal.js" defer></script>
   <script src="js/components/credentials.js" defer></script>
   <script src="js/components/projects.js" defer></script>
   <script src="js/components/footer.js" defer></script>

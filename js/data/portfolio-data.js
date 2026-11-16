@@ -127,6 +127,219 @@ window.PORTFOLIO_DATA = {
         { label: 'Backtesting', detail: 'Pruebas históricas rigurosas y análisis estadístico de ejecuciones.' },
         { label: 'Control de riesgo', detail: 'Reglas de gestión del riesgo integradas en la operativa.' }
       ]
+    },
+    {
+      name: 'EASM Testbed & Attack Surface Lab',
+      type: 'EASM & Hardening',
+      description: 'Entorno controlado para validación de escáneres de External Attack Surface Management (EASM): simulación modular de posturas de seguridad (cabeceras HTTP, configuraciones TLS, registros DNS, exposición de servicios y reglas WAF) para medir cobertura de detección.',
+      stack: ['EASM', 'TLS/SSL', 'HTTP Security Headers', 'DNS Security', 'WAF', 'Docker'],
+      pipeline: [
+        { label: 'Superficie DNS & TLS', detail: 'Registros SPF/DMARC/CAA, subdominios y perfiles de cifrado TLS.' },
+        { label: 'Perfiles de Exposición', detail: 'Activación modular de WAF, cabeceras HTTP, puertos y rutas señuelo.' },
+        { label: 'Escaneo EASM', detail: 'Ejecución de descubrimiento externo, fingerprinting y auditoría.' },
+        { label: 'Verificación de Detección', detail: 'Comparativa de hallazgos antes y después de aplicar hardening.' }
+      ]
+    }
+  ],
+
+  arsenal: {
+    mitreTactics: [
+      {
+        id: 'TA0001 / TA0002',
+        tactic: 'Initial Access & Execution',
+        techniques: ['T1059.001 · PowerShell', 'T1204.002 · Malicious File'],
+        focus: 'Detección de cadenas anómalas padre-hijo (Winword/Browser → CMD/PowerShell), argumentos Base64 y ejecución en memoria.',
+        telemetry: 'Sysmon EID 1 / ScriptBlock 4104'
+      },
+      {
+        id: 'TA0003 / TA0004',
+        tactic: 'Persistence & PrivEsc',
+        techniques: ['T1547.001 · Registry Run Keys', 'T1053.005 · Scheduled Task'],
+        focus: 'Correlación de modificaciones en claves Run/Services, creación de tareas programadas sospechosas y abuso de tokens.',
+        telemetry: 'Sysmon EID 13 / Security 4698'
+      },
+      {
+        id: 'TA0005',
+        tactic: 'Defense Evasion',
+        techniques: ['T1218.011 · Rundll32', 'T1055 · Process Injection'],
+        focus: 'Caza de LOLBins/GTFOBins con carga de DLLs desde AppData/ProgramData, hollowing e hilos remotos no firmados.',
+        telemetry: 'Sysmon EID 7, 8 / EDR Telemetry'
+      },
+      {
+        id: 'TA0006',
+        tactic: 'Credential Access',
+        techniques: ['T1003.001 · LSASS Memory', 'T1558.003 · Kerberoasting'],
+        focus: 'Bloqueo de accesos no autorizados con permisos PROCESS_VM_READ sobre lsass.exe y peticiones anómalas TGS RC4.',
+        telemetry: 'Sysmon EID 10 / Security 4769'
+      },
+      {
+        id: 'TA0008',
+        tactic: 'Lateral Movement',
+        techniques: ['T1021.002 · SMB/Admin Shares', 'T1047 · WMI Exec'],
+        focus: 'Seguimiento de saltos RDP/SMB entre estaciones y servidores críticos mediante autenticación NTLM/Kerberos atípica.',
+        telemetry: 'Security 4624 (Tipo 3/10) / Zeek'
+      },
+      {
+        id: 'TA0011',
+        tactic: 'Command & Control',
+        techniques: ['T1071.001 · Web Protocols', 'T1573 · Encrypted Channel'],
+        focus: 'Análisis estadístico de jitter/beaconing periódico hacia dominios recién registrados o IPs de infraestructura efímera.',
+        telemetry: 'Sysmon EID 3 / Proxy & DNS Logs'
+      }
+    ],
+    detections: [
+      {
+        id: 'sigma',
+        label: 'Sigma Rule (YAML)',
+        title: 'Suspicious Encoded PowerShell & Rundll32 Proxy Execution',
+        mitre: 'T1059.001 / T1218.011',
+        code: `title: Suspicious Encoded PowerShell Spawning Proxy Execution
+id: 7f8e9a12-4c3b-4d1a-9f55-08b2c4e19021
+status: production
+level: high
+author: Javier Alonso Sanchez
+description: Detecta ejecucion de PowerShell ofuscado seguida de carga proxy con rundll32 desde rutas temporales.
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_ps:
+    Image|endswith:
+      - '\\powershell.exe'
+      - '\\pwsh.exe'
+    CommandLine|contains:
+      - ' -enc '
+      - ' -EncodedCommand '
+      - 'FromBase64String'
+  selection_proxy:
+    ParentImage|endswith: '\\powershell.exe'
+    Image|endswith: '\\rundll32.exe'
+    CommandLine|contains:
+      - 'C:\\ProgramData\\'
+      - 'AppData\\Local\\Temp\\'
+  condition: selection_ps or selection_proxy
+falsepositives:
+  - Scripts administrativos firmados de despliegue SCCM/Intune
+tags:
+  - attack.execution
+  - attack.t1059.001
+  - attack.defense_evasion
+  - attack.t1218.011`
+      },
+      {
+        id: 'kql',
+        label: 'Chronicle / KQL Hunt',
+        title: 'Threat Hunting Query — Beaconing & Process Injection',
+        mitre: 'T1055 / T1071.001',
+        code: `// Threat Hunt: Correlacion de inyeccion en svchost.exe + beaconing C2 saliente
+let InjectedProcesses = DeviceEvents
+| where Timestamp > ago(24h)
+| where ActionType in ("CreateRemoteThreadApiCall", "NtAllocateVirtualMemoryApiCall")
+| where FileName =~ "svchost.exe"
+| project InjectionTime = Timestamp, DeviceName, InitiatingProcessFileName,
+          InitiatingProcessCommandLine, TargetProcessId = ProcessId;
+DeviceNetworkEvents
+| where Timestamp > ago(24h)
+| where InitiatingProcessFileName =~ "svchost.exe"
+| where RemoteIPType == "Public" and RemotePort in (443, 8443, 8080)
+| join kind=inner (InjectedProcesses) on DeviceName
+| where Timestamp between (InjectionTime .. (InjectionTime + 15m))
+| summarize BeaconCount = count(),
+            FirstSeen = min(Timestamp),
+            LastSeen = max(Timestamp),
+            AvgDeltaSec = avg(datetime_diff('second', Timestamp, prev(Timestamp)))
+  by DeviceName, RemoteIP, RemotePort, InitiatingProcessCommandLine
+| where BeaconCount >= 10
+| sort by BeaconCount desc`
+      },
+      {
+        id: 'soar',
+        label: 'SOAR Playbook (JSON)',
+        title: 'Automated Containment & IOC Enrichment Workflow',
+        mitre: 'D3-IAA / Respond',
+        code: `{
+  "playbook": "SOC-L3-APT-Containment-v2",
+  "trigger": {
+    "source": "Google SecOps / FortiSIEM",
+    "severity": ["HIGH", "CRITICAL"],
+    "rule_tags": ["T1059.001", "T1055"]
+  },
+  "steps": [
+    {
+      "id": "01_enrich_ioc",
+      "action": "virustotal_ip_domain_lookup",
+      "targets": ["{{alert.remote_ip}}", "{{alert.sha256}}"],
+      "threshold_malicious": 5
+    },
+    {
+      "id": "02_edr_triage",
+      "action": "crowdstrike_rtr_process_tree",
+      "host": "{{alert.hostname}}",
+      "collect": ["memory_strings", "network_sockets"]
+    },
+    {
+      "id": "03_host_isolation",
+      "condition": "enrich_ioc.malicious >= 5 && edr_triage.injected == true",
+      "action": "edr_network_contain",
+      "host": "{{alert.hostname}}"
+    },
+    {
+      "id": "04_case_management",
+      "action": "thehive_create_case",
+      "severity": 3,
+      "tlp": "AMBER",
+      "observables": ["{{alert.remote_ip}}", "{{alert.sha256}}", "{{alert.mutex}}"]
     }
   ]
+}`
+      }
+    ]
+  },
+
+  terminalGame: {
+    missionTitle: 'Operation BlueShield · SOC L3 Live Incident Simulator',
+    incidentId: 'INC-2026-4092',
+    affectedHost: 'WKSTN-FIN-04',
+    maliciousFile: 'sync_agent.dll',
+    c2Ip: '185.220.101.42',
+    c2Domain: 'auth-telemetry-node[.]net',
+    mutex: 'Global\\Nightfall_Mtx',
+    phases: [
+      {
+        id: 'triage',
+        step: '01',
+        label: 'Triage',
+        cmd: 'alerts',
+        hint: 'Revisa la cola de alertas del SIEM con `alerts`.'
+      },
+      {
+        id: 'edr',
+        step: '02',
+        label: 'EDR Forensics',
+        cmd: 'edr WKSTN-FIN-04',
+        hint: 'Inspecciona el árbol de procesos y memoria con `edr WKSTN-FIN-04`.'
+      },
+      {
+        id: 'reversing',
+        step: '03',
+        label: 'Reversing',
+        cmd: 'reversing sync_agent.dll',
+        hint: 'Analiza el payload detectado ejecutando `reversing sync_agent.dll`.'
+      },
+      {
+        id: 'hunt',
+        step: '04',
+        label: 'Threat Hunt',
+        cmd: 'hunt 185.220.101.42',
+        hint: 'Ejecuta threat hunting en el SIEM/ClickHouse con `hunt 185.220.101.42`.'
+      },
+      {
+        id: 'contain',
+        step: '05',
+        label: 'Containment',
+        cmd: 'contain WKSTN-FIN-04',
+        hint: 'Ejecuta el playbook de aislamiento y bloqueo con `contain WKSTN-FIN-04`.'
+      }
+    ]
+  }
 };

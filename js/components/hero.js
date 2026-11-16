@@ -79,9 +79,62 @@
       ),
       h('div', { class: 'hero__actions' },
         h('a', { class: 'btn btn--primary', href: p.linkedin, target: '_blank', rel: 'noopener noreferrer' }, icon('linkedin'), 'LinkedIn', h('span', { class: 'sr-only' }, ' (se abre en una pestaña nueva)')),
+        h('a', { class: 'btn btn--sim', href: '#simulador' }, icon('terminal'), 'Jugar Simulador SOC'),
         h('a', { class: 'btn', href: 'mailto:' + p.email }, icon('mail'), 'Enviar correo'),
         h('a', { class: 'btn', href: data.meta.cvUrl, download: '' }, icon('download'), 'Descargar CV')
       )
+    );
+
+    const feedEvents = [
+      { tag: 'SIEM', text: 'Rule matched: Sysmon EID 10 LSASS Access blocked', tone: 'accent' },
+      { tag: 'EDR', text: 'Falcon prevented credential dumping on WKSTN-09', tone: 'ok' },
+      { tag: 'SOAR', text: 'Playbook enriched 3 IOCs via VirusTotal', tone: 'cyan' },
+      { tag: 'HUNT', text: 'ClickHouse query scanned 1.4M events in 42ms', tone: 'warn' }
+    ];
+    let feedIdx = 0;
+    let feedPaused = P.prefersReducedMotion();
+
+    const feedTag = h('span', { class: 'hero-feed__tag is-' + feedEvents[0].tone }, '[' + feedEvents[0].tag + ']');
+    const feedMsg = h('span', { class: 'hero-feed__msg' }, feedEvents[0].text);
+    const feedToggle = h('button', { class: 'link-btn hero-feed__btn', type: 'button' }, feedPaused ? 'Reanudar' : 'Pausar');
+
+    function renderFeedEvent() {
+      const ev = feedEvents[feedIdx];
+      feedTag.className = 'hero-feed__tag is-' + ev.tone;
+      feedTag.textContent = '[' + ev.tag + ']';
+      feedMsg.textContent = ev.text;
+    }
+
+    let feedTimer = null;
+    function startFeed() {
+      if (feedTimer || feedPaused) return;
+      feedTimer = setInterval(function () {
+        feedIdx = (feedIdx + 1) % feedEvents.length;
+        renderFeedEvent();
+      }, 4000);
+    }
+    function stopFeed() {
+      if (feedTimer) { clearInterval(feedTimer); feedTimer = null; }
+    }
+
+    feedToggle.addEventListener('click', function () {
+      feedPaused = !feedPaused;
+      feedToggle.textContent = feedPaused ? 'Reanudar' : 'Pausar';
+      if (feedPaused) stopFeed();
+      else {
+        feedIdx = (feedIdx + 1) % feedEvents.length;
+        renderFeedEvent();
+        startFeed();
+      }
+    });
+    startFeed();
+
+    const feedBox = h('div', { class: 'hero-feed' },
+      h('div', { class: 'hero-feed__head' },
+        h('span', { class: 'hero-feed__title' }, icon('activity'), 'live_telemetry.stream'),
+        feedToggle
+      ),
+      h('p', { class: 'hero-feed__line' }, feedTag, ' ', feedMsg)
     );
 
     const right = h('aside', { class: 'terminal', 'aria-label': 'Métricas clave' },
@@ -91,7 +144,8 @@
       ),
       h('div', { class: 'terminal__body' },
         h('p', { class: 'terminal__cmd' }, h('span', { class: 'ps1' }, '$ '), 'cat metrics.log'),
-        h('div', { class: 'stats' }, statEls.map(function (s) { return s.node; }))
+        h('div', { class: 'stats' }, statEls.map(function (s) { return s.node; })),
+        feedBox
       )
     );
 

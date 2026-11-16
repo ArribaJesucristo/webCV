@@ -31,7 +31,7 @@
       h('div', { class: 'container' },
         h('div', { class: 'footer-grid' },
           h('div', { class: 'footer-cta' },
-            h('p', { class: 'eyebrow' }, '// 05 · contact.sh'),
+            h('p', { class: 'eyebrow' }, '// 07 · contact.sh'),
             h('h2', null, '¿Hablamos de detección, DFIR o respuesta a incidentes?'),
             h('p', null, 'Disponible para conversar sobre ingeniería de detección, threat hunting y proyectos de ciberdefensa. Descarga mi CV o escríbeme directamente.'),
             h('a', { class: 'btn btn--primary', href: data.meta.cvUrl, download: '' }, icon('download'), 'Descargar CV (PDF)')
